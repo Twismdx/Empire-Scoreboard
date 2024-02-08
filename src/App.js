@@ -65,10 +65,6 @@ function App() {
 		fetchEBASA()
 	}
 
-	useEffect(() => {
-		handleVNEA()
-	}, [])
-
 	const mapStats = Object.entries(comps).map((item) => item)
 
 	const matchesArray = mapStats.map(([_, compData]) => compData)
@@ -106,9 +102,11 @@ function App() {
 
 	function Post() {
 		axios
-			.post(
-				`https://www.poolstat.net.au/livestream/multimatch?key=Y6tS35_9cysvUkpxXEYD0f2L8qiHZidj&api=1&ids=${matchId}`
-			)
+			.post(`https://twism.vercel.app/drid`, null, {
+				params: {
+					matchId,
+				},
+			})
 			.then(function (response) {
 				var res = Object.keys(response.data).map(function (key) {
 					return response.data[key]
