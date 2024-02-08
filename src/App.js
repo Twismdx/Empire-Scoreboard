@@ -179,10 +179,16 @@ function App() {
 					</style>
 				</Helmet>
 				<div className='box'>
-					<div style={{ margin: '10px' }}>
+					<div
+						onClick={handleEBASA}
+						style={{ margin: '10px' }}
+					>
 						<button onClick={handleEBASA}>EBASA</button>
 					</div>
-					<div style={{ margin: '10px' }}>
+					<div
+						onClick={handleVNEA}
+						style={{ margin: '10px' }}
+					>
 						<button onClick={handleVNEA}>VNEA</button>
 					</div>
 				</div>
