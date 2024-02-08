@@ -65,6 +65,10 @@ function App() {
 		fetchEBASA()
 	}
 
+	useEffect(() => {
+		handleEBASA()
+	}, [])
+
 	const mapStats = Object.entries(comps).map((item) => item)
 
 	const matchesArray = mapStats.map(([_, compData]) => compData)
