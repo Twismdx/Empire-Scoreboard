@@ -66,7 +66,7 @@ function App() {
 	}
 
 	useEffect(() => {
-		handleEBASA()
+		handleVNEA()
 	}, [])
 
 	const mapStats = Object.entries(comps).map((item) => item)
