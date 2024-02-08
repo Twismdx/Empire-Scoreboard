@@ -24,6 +24,8 @@ const AppProvider = ({ children }) => {
 	const [copy, setCopy] = useState('')
 	const [stats, setStats] = useState([])
 	const [comps, setComps] = useState([])
+	const [cards, setCards] = useState(false)
+	const [isReady, setIsReady] = useState(false)
 
 	configureAbly({
 		key: '9zzpLg.YrD7jw:RCOMB9Lq4mkx0-5Zn99PFY4iKEA1WtvpBWG-5fRkv0M',
@@ -88,6 +90,10 @@ const AppProvider = ({ children }) => {
 				setCompId,
 				comps,
 				setComps,
+				cards,
+				setCards,
+				isReady,
+				setIsReady,
 			}}
 		>
 			{children}

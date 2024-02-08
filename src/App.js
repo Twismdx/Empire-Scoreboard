@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './home.css'
 import MatchCard from './components/MatchCard'
 import { Multi } from './components/Multi'
@@ -19,12 +19,13 @@ function App() {
 		compId,
 		comps,
 		setComps,
+		cards,
+		setCards,
+		isReady,
+		setIsReady,
 	} = useGlobalContext()
 
-	const [isReady, setIsReady] = useState(false)
-	const [cards, setCards] = useState(false)
-	const [vnea, setVnea] = useState(false)
-	const [ebasa, setEbasa] = useState(false)
+	const statsRef = useRef()
 
 	const fetchEBASA = async () => {
 		try {
@@ -56,37 +57,13 @@ function App() {
 		}
 	}
 
-	useEffect(() => {
-		if (vnea === true) {
-			let timeout
+	const handleVNEA = () => {
+		fetchVNEA()
+	}
 
-			const fetchData = async () => {
-				await fetchVNEA()
-				timeout = setTimeout(fetchData, 30000)
-			}
-			fetchData()
-
-			return () => {
-				if (timeout) {
-					clearTimeout(timeout)
-				}
-			}
-		} else if (ebasa === true) {
-			let timeout
-
-			const fetchData = async () => {
-				await fetchEBASA()
-				timeout = setTimeout(fetchData, 30000)
-			}
-			fetchData()
-
-			return () => {
-				if (timeout) {
-					clearTimeout(timeout)
-				}
-			}
-		}
-	}, [vnea, ebasa])
+	const handleEBASA = () => {
+		fetchEBASA()
+	}
 
 	const mapStats = Object.entries(comps).map((item) => item)
 
@@ -123,45 +100,47 @@ function App() {
 		matchKeys.push(...keys)
 	})
 
-	const fetchMatchData = async () => {
-		try {
-			const response = await axios.post(
+	function Post() {
+		axios
+			.post(
 				`https://www.poolstat.net.au/livestream/multimatch?key=Y6tS35_9cysvUkpxXEYD0f2L8qiHZidj&api=1&ids=${matchId}`
 			)
-			var res = Object.keys(response.data).map(function (key) {
-				return response.data[key]
+			.then(function (response) {
+				var res = Object.keys(response.data).map(function (key) {
+					return response.data[key]
+				})
+				setStats(res)
 			})
-			setStats(res)
-		} catch (error) {
-			console.error('Error:', error)
-		}
+			.catch((err) => console.warn(err))
 	}
 
 	useEffect(() => {
-		if (isReady) {
-			let timeout
-
-			const fetchData = async () => {
-				await fetchMatchData()
-				timeout = setTimeout(fetchData, 30000)
-			}
-			fetchData()
-
-			return () => {
-				if (timeout) {
-					clearTimeout(timeout)
-				}
-			}
+		Post()
+		const interval = setInterval(() => {
+			Post()
+		}, 15000)
+		return () => {
+			clearInterval(interval)
 		}
-	}, [isReady])
+	}, [isLoading])
 
-	useEffect(() => {
-		if (matchId) {
-			setIsReady(true)
-		} else setIsReady(false)
-	}, [matchId])
+	// const fetchMatchData = async () => {
+	// 	try {
+	// 		const response = await axios.post(
+	// 			`https://www.poolstat.net.au/livestream/multimatch?key=Y6tS35_9cysvUkpxXEYD0f2L8qiHZidj&api=1&ids=${matchId}`
+	// 		)
+	// 		var res = Object.keys(response.data).map(function (key) {
+	// 			return response.data[key]
+	// 		})
 
-	if (cards === true) {
+	// 		// Update the ref instead of the state
+	// 		statsRef.current = res;
+	// 	} catch (error) {
+	// 		console.error('Error:', error)
+	// 	}
+	// }
+
+	if (cards && !isLoading) {
 		return (
 			<>
 				<Helmet>
@@ -189,22 +168,7 @@ function App() {
 				</div>
 			</>
 		)
-	} else if (isReady === true && stats[0]) {
-		return (
-			<>
-				<Helmet>
-					<style>
-						{
-							'body { background-image: none; background-color: transparent !important; }'
-						}
-					</style>
-				</Helmet>
-				<div className='container-3'>
-					<SvgTeam />
-				</div>
-			</>
-		)
-	} else if (cards === false) {
+	} else if (!cards && !isLoading) {
 		return (
 			<>
 				<Helmet>
@@ -216,11 +180,26 @@ function App() {
 				</Helmet>
 				<div className='box'>
 					<div style={{ margin: '10px' }}>
-						<button onClick={() => setEbasa(true)}>EBASA</button>
+						<button onClick={handleEBASA}>EBASA</button>
 					</div>
 					<div style={{ margin: '10px' }}>
-						<button onClick={() => setVnea(true)}>VNEA</button>
+						<button onClick={handleVNEA}>VNEA</button>
 					</div>
+				</div>
+			</>
+		)
+	} else {
+		return (
+			<>
+				<Helmet>
+					<style>
+						{
+							'body { background-image: none; background-color: transparent !important; }'
+						}
+					</style>
+				</Helmet>
+				<div className='container-3'>
+					<SvgTeam />
 				</div>
 			</>
 		)
