@@ -510,7 +510,9 @@ const SvgTeam = () => {
 							textAlign: 'center',
 						}}
 					>
-						{`${homeScore}`}
+						{stats[0].homescorepoints === '0'
+							? stats[0].homescore
+							: `${homeScore}`}
 					</text>
 					<text
 						textAnchor='middle'
@@ -522,7 +524,9 @@ const SvgTeam = () => {
 							textAlign: 'center',
 						}}
 					>
-						{`${awayScore}`}
+						{stats[0].awayscorepoints === '0'
+							? stats[0].awayscore
+							: `${awayScore}`}
 					</text>
 					<text
 						textAnchor='middle'
