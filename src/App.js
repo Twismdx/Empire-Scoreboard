@@ -31,8 +31,11 @@ function App() {
 		try {
 			const response = await axios.post(
 				'https://twism.vercel.app/compstoday',
+				null,
 				{
-					orgid: 33,
+					params: {
+						orgid: 33,
+					},
 				}
 			)
 			setComps(response.data)
@@ -46,8 +49,11 @@ function App() {
 		try {
 			const response = await axios.post(
 				'https://twism.vercel.app/compstoday',
+				null,
 				{
-					orgid: 122,
+					params: {
+						orgid: 122,
+					},
 				}
 			)
 			setComps(response.data)
