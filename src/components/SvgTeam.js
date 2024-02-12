@@ -26,6 +26,11 @@ const SvgTeam = () => {
 			0
 		)
 	const framesLeft = calculateFrames(adj)
+
+	const calcSuperleagueFrames = () => {
+		const total = stats[0]?.homescore + stats[0]?.awayscore
+		const frames = 36 - total
+	}
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -464,7 +469,10 @@ const SvgTeam = () => {
 							textAlign: 'center',
 						}}
 					>
-						{framesLeft}
+						{stats[0].homeframepointsadj === '0' &&
+						stats[0].awayframepointsadj === '0'
+							? { calcSuperleagueFrames }
+							: { framesLeft }}
 					</text>
 					<text
 						textAnchor='middle'
