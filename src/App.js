@@ -30,7 +30,7 @@ function App() {
 	const fetchEBASA = async () => {
 		try {
 			const response = await axios.post(
-				'https://www.poolstat.net.au/cslapi/v1/compstoday',
+				'https://twism.vercel.app/compstoday',
 				{
 					orgid: 33,
 				}
@@ -45,7 +45,7 @@ function App() {
 	const fetchVNEA = async () => {
 		try {
 			const response = await axios.post(
-				'https://www.poolstat.net.au/cslapi/v1/compstoday',
+				'https://twism.vercel.app/compstoday',
 				{
 					orgid: 122,
 				}
