@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from 'react'
 import './home.css'
 import MatchCard from './components/MatchCard'
 import { Multi } from './components/Multi'
-import { SvgTeam } from './components/SvgTeam'
+import { Superleague } from './components/Superleague'
+import { Vegasleague } from './components/Vegasleague'
 import { useGlobalContext } from './components/Context'
 import axios from 'axios'
 import { Helmet } from 'react-helmet'
@@ -25,7 +26,7 @@ function App() {
 		setIsReady,
 	} = useGlobalContext()
 
-	const statsRef = useRef()
+	const [league, setLeague] = useState('VegasLeague')
 
 	const fetchEBASA = async () => {
 		try {
@@ -39,6 +40,7 @@ function App() {
 				}
 			)
 			setComps(response.data)
+			setLeague('SuperLeague')
 			setCards(true)
 		} catch (error) {
 			console.error('Error:', error)
@@ -57,6 +59,7 @@ function App() {
 				}
 			)
 			setComps(response.data)
+			setLeague('VegasLeague')
 			setCards(true)
 		} catch (error) {
 			console.error('Error:', error)
@@ -202,7 +205,7 @@ function App() {
 				</div>
 			</>
 		)
-	} else {
+	} else if (league === 'VegasLeague') {
 		return (
 			<>
 				<Helmet>
@@ -213,7 +216,22 @@ function App() {
 					</style>
 				</Helmet>
 				<div className='container-3'>
-					<SvgTeam />
+					<Vegasleague />
+				</div>
+			</>
+		)
+	} else if (league === 'SuperLeague') {
+		return (
+			<>
+				<Helmet>
+					<style>
+						{
+							'body { background-image: none; background-color: transparent !important; }'
+						}
+					</style>
+				</Helmet>
+				<div className='container-3'>
+					<Superleague />
 				</div>
 			</>
 		)
