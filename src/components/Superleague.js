@@ -2,7 +2,7 @@ import React from 'react'
 import '../home.css'
 import { useGlobalContext } from './Context'
 
-const SvgTeam = () => {
+const Superleague = () => {
 	const { stats } = useGlobalContext()
 	const adj = new Array(stats[0])
 	const calculateScore = (data, type) =>
@@ -616,4 +616,4 @@ const SvgTeam = () => {
 // {stats[0].homeframepointsadj===0 && stats[0].homescorepoints===0 ? stats[0].homescore : `${homeScore}`}
 // {stats[0].homescorepoints>0 ? `${stats[0].homescore}` : ''}
 // {stats[0].awayscorepoints>0 ? `${stats[0].awayscore}` : ''}
-export { SvgTeam }
+export { Superleague }
