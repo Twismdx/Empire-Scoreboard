@@ -472,7 +472,12 @@ const Superleague = () => {
 						}}
 					>
 						{stats[0].homeframepointsadj === '0' &&
-						stats[0].awayframepointsadj === '0'
+						stats[0].awayframepointsadj === '0' &&
+						stats[0].homescorepoints === '0' &&
+						stats[0].awayscorepoints === '0'
+							? ''
+							: stats[0].homeframepointsadj === '0' &&
+							  stats[0].awayframepointsadj === '0'
 							? calcSuperleagueFrames()
 							: framesLeft}
 					</text>
@@ -486,7 +491,15 @@ const Superleague = () => {
 							textAlign: 'center',
 						}}
 					>
-						Frames Left
+						{stats[0].homeframepointsadj === '0' &&
+						stats[0].awayframepointsadj === '0' &&
+						stats[0].homescorepoints === '0' &&
+						stats[0].awayscorepoints === '0'
+							? ''
+							: stats[0].homeframepointsadj === '0' &&
+							  stats[0].awayframepointsadj === '0'
+							? 'Frames Left'
+							: framesLeft}
 					</text>
 					<text
 						textAnchor='left'
