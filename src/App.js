@@ -21,8 +21,8 @@ function App() {
 		setCompId,
 		comps,
 		setComps,
-		cards,
-		setCards,
+		view,
+		setView,
 		isReady,
 		setIsReady,
 	} = useGlobalContext()
@@ -40,9 +40,10 @@ function App() {
 					},
 				}
 			)
-			setComps(response.data)
+			const id = Object.keys(response).map((key) => key)[0]
 			setLeague('SuperLeague')
-			setCards(true)
+			setComps(response.data)
+			setCompId(id)
 		} catch (error) {
 			console.error('Error:', error)
 		}
@@ -60,10 +61,9 @@ function App() {
 				}
 			)
 			const id = Object.keys(response).map((key) => key)[0]
+			setLeague('VegasLeague')
 			setCompId(id)
 			setComps(response.data)
-			setLeague('VegasLeague')
-			setCards(true)
 		} catch (error) {
 			console.error('Error:', error)
 		}
@@ -71,10 +71,16 @@ function App() {
 
 	const handleVNEA = () => {
 		fetchVNEA()
+		setView('match')
 	}
 
 	const handleEBASA = () => {
 		fetchEBASA()
+		setView('match')
+	}
+
+	const resetView = () => {
+		setView('default')
 	}
 
 	const mapStats = Object.entries(comps).map((item) => item)
@@ -112,33 +118,6 @@ function App() {
 		matchKeys.push(...keys)
 	})
 
-	function Post() {
-		axios
-			.post(`https://twism.vercel.app/ids`, null, {
-				params: {
-					matchId,
-					compId,
-				},
-			})
-			.then(function (response) {
-				var res = Object.keys(response.data).map(function (key) {
-					return response.data[key]
-				})
-				setStats(res)
-			})
-			.catch((err) => console.warn(err))
-	}
-
-	useEffect(() => {
-		Post()
-		const interval = setInterval(() => {
-			Post()
-		}, 15000)
-		return () => {
-			clearInterval(interval)
-		}
-	}, [isLoading])
-
 	// const fetchMatchData = async () => {
 	// 	try {
 	// 		const response = await axios.post(
@@ -155,7 +134,9 @@ function App() {
 	// 	}
 	// }
 
-	if (cards && !isLoading) {
+	useEffect(() => console.log(view), [view])
+
+	if (view === 'match') {
 		return (
 			<>
 				<Helmet>
@@ -178,13 +159,15 @@ function App() {
 								id={matchKeys[index]}
 								stats={comps}
 								cid={mapStats[0][0]}
+								setView={setView}
+								league={league}
 							/>
 						))}
 					</div>
 				</div>
 			</>
 		)
-	} else if (!cards && !isLoading) {
+	} else if (view === 'default') {
 		return (
 			<>
 				<Helmet>
@@ -210,7 +193,7 @@ function App() {
 				</div>
 			</>
 		)
-	} else if (league === 'VegasLeague') {
+	} else if (view === 'vegasleague') {
 		return (
 			<>
 				<Helmet>
@@ -221,11 +204,11 @@ function App() {
 					</style>
 				</Helmet>
 				<div className='container-3'>
-					<Vegasleague />
+					<Vegasleague resetView={resetView} />
 				</div>
 			</>
 		)
-	} else if (league === 'SuperLeague') {
+	} else if (view === 'superleague') {
 		return (
 			<>
 				<Helmet>
@@ -236,7 +219,7 @@ function App() {
 					</style>
 				</Helmet>
 				<div className='container-3'>
-					<Superleague />
+					<Superleague resetView={resetView} />
 				</div>
 			</>
 		)

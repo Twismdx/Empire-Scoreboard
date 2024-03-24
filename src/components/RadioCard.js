@@ -4,11 +4,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useGlobalContext } from './Context'
 import axios from 'axios'
 
-const RadioCard = ({ home, away, id, cid, liveStatus }) => {
+const RadioCard = ({
+	home,
+	away,
+	id,
+	cid,
+	liveStatus,
+	resetView,
+	setView,
+	league,
+}) => {
 	const {
-		matchId,
 		setMatchId,
-		compId,
 		setCompId,
 		cards,
 		setCards,
@@ -22,7 +29,7 @@ const RadioCard = ({ home, away, id, cid, liveStatus }) => {
 		setLiveStatus,
 	} = useGlobalContext()
 
-	function Post() {
+	function Post(matchId, compId) {
 		axios
 			.post(`https://twism.vercel.app/ids`, null, {
 				params: {
@@ -39,12 +46,25 @@ const RadioCard = ({ home, away, id, cid, liveStatus }) => {
 			.catch((err) => console.warn(err))
 	}
 
+	useEffect(() => {
+		Post()
+		const interval = setInterval(() => {
+			Post(id, cid)
+		}, 15000)
+		return () => {
+			clearInterval(interval)
+		}
+	}, [])
+
 	const handleClick = () => {
 		setMatchId(id)
 		setCompId(cid)
-		setCards(false)
-		Post()
-		setIsLoading(true)
+		Post(id, cid)
+		if (league === 'SuperLeague') {
+			setView('superleague')
+		} else if (league === 'VegasLeague') {
+			setView('vegasleague')
+		}
 		setLiveStatus(liveStatus)
 	}
 

@@ -1,31 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import '../home.css'
 import { useGlobalContext } from './Context'
 
-const Superleague = () => {
-	const { stats, liveStatus, setIsLoading, setCards } = useGlobalContext()
+const Superleague = ({ resetView }) => {
+	const { stats, liveStatus } = useGlobalContext()
 	const adj = new Array(stats[0])
-	const calculateScore = (data, type) =>
-		Object.values(data).reduce(
-			(acc, curr) =>
-				acc +
-				parseInt(curr[`${type}scorepoints`]) +
-				parseInt(curr[`${type}framepointsadj`]),
-			0
-		)
-	const homeScore = calculateScore(adj, 'home')
-	const awayScore = calculateScore(adj, 'away')
-
-	const calculateFrames = (data, type) =>
-		Object.values(data).reduce(
-			(acc, curr) =>
-				25 -
-				(acc +
-					parseInt(curr[`homescore`]) +
-					parseInt(curr[`awayscore`])),
-			0
-		)
-	const framesLeft = calculateFrames(adj)
 
 	const calcSuperleagueFrames = () => {
 		const total = stats[0]?.homescore + stats[0]?.awayscore
@@ -36,8 +15,7 @@ const Superleague = () => {
 
 	useEffect(() => {
 		if (liveStatus === '3') {
-			setIsLoading(false)
-			setCards(true)
+			resetView()
 		}
 	}, [liveStatus])
 
@@ -479,15 +457,10 @@ const Superleague = () => {
 							textAlign: 'center',
 						}}
 					>
-						{stats[0].homeframepointsadj === '0' &&
-						stats[0].awayframepointsadj === '0' &&
-						stats[0].homescorepoints === '0' &&
-						stats[0].awayscorepoints === '0'
-							? ''
-							: stats[0].homeframepointsadj === '0' &&
-							  stats[0].awayframepointsadj === '0'
+						{stats[0].compname ===
+						'Super League 2024 (Premier Grade)'
 							? calcSuperleagueFrames()
-							: framesLeft}
+							: ''}
 					</text>
 					<text
 						textAnchor='middle'
@@ -499,15 +472,10 @@ const Superleague = () => {
 							textAlign: 'center',
 						}}
 					>
-						{stats[0].homeframepointsadj === '0' &&
-						stats[0].awayframepointsadj === '0' &&
-						stats[0].homescorepoints === '0' &&
-						stats[0].awayscorepoints === '0'
-							? ''
-							: stats[0].homeframepointsadj === '0' &&
-							  stats[0].awayframepointsadj === '0'
+						{stats[0].compname ===
+						'Super League 2024 (Premier Grade)'
 							? 'Frames Left'
-							: framesLeft}
+							: ''}
 					</text>
 					<text
 						textAnchor='left'
@@ -541,9 +509,7 @@ const Superleague = () => {
 							textAlign: 'center',
 						}}
 					>
-						{stats[0].homescorepoints === '0'
-							? stats[0].homescore
-							: `${homeScore}`}
+						{stats[0].homescore}
 					</text>
 					<text
 						textAnchor='middle'
@@ -555,9 +521,7 @@ const Superleague = () => {
 							textAlign: 'center',
 						}}
 					>
-						{stats[0].awayscorepoints === '0'
-							? stats[0].awayscore
-							: `${awayScore}`}
+						{stats[0].awayscore}
 					</text>
 					<text
 						textAnchor='middle'
