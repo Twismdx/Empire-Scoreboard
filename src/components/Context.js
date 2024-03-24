@@ -26,6 +26,7 @@ const AppProvider = ({ children }) => {
 	const [comps, setComps] = useState([])
 	const [cards, setCards] = useState(false)
 	const [isReady, setIsReady] = useState(false)
+	const [liveStatus, setLiveStatus] = useState()
 
 	configureAbly({
 		key: '9zzpLg.YrD7jw:RCOMB9Lq4mkx0-5Zn99PFY4iKEA1WtvpBWG-5fRkv0M',
@@ -94,6 +95,8 @@ const AppProvider = ({ children }) => {
 				setCards,
 				isReady,
 				setIsReady,
+				liveStatus,
+				setLiveStatus,
 			}}
 		>
 			{children}

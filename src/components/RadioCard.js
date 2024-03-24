@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useGlobalContext } from './Context'
 import axios from 'axios'
 
-const RadioCard = ({ home, away, id, cid }) => {
+const RadioCard = ({ home, away, id, cid, liveStatus }) => {
 	const {
 		matchId,
 		setMatchId,
@@ -18,13 +18,19 @@ const RadioCard = ({ home, away, id, cid }) => {
 		setIsLoading,
 		stats,
 		setStats,
+		comps,
+		liveStatus,
+		setLiveStatus,
 	} = useGlobalContext()
 
 	function Post() {
 		axios
-			.post(
-				`https://www.poolstat.net.au/livestream/multimatch?key=Y6tS35_9cysvUkpxXEYD0f2L8qiHZidj&api=1&ids=${matchId}`
-			)
+			.post(`https://twism.vercel.app/ids`, null, {
+				params: {
+					matchId,
+					compId,
+				},
+			})
 			.then(function (response) {
 				var res = Object.keys(response.data).map(function (key) {
 					return response.data[key]
@@ -40,6 +46,7 @@ const RadioCard = ({ home, away, id, cid }) => {
 		setCards(false)
 		Post()
 		setIsLoading(true)
+		setLiveStatus(liveStatus)
 	}
 
 	return (

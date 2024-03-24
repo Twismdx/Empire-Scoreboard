@@ -174,6 +174,7 @@ function App() {
 								home={match[1].home.teamname}
 								away={match[1].away.teamname}
 								startTime={match[1].matchtime}
+								liveStatus={match[1].livestatus}
 								id={matchKeys[index]}
 								stats={comps}
 								cid={mapStats[0][0]}

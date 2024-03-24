@@ -3,7 +3,7 @@ import '../home.css'
 import { useGlobalContext } from './Context'
 
 const Superleague = () => {
-	const { stats } = useGlobalContext()
+	const { stats, liveStatus, setIsLoading, setCards } = useGlobalContext()
 	const adj = new Array(stats[0])
 	const calculateScore = (data, type) =>
 		Object.values(data).reduce(
@@ -33,6 +33,14 @@ const Superleague = () => {
 
 		return frames
 	}
+
+	useEffect(() => {
+		if (liveStatus === '3') {
+			setIsLoading(false)
+			setCards(true)
+		}
+	}, [liveStatus])
+
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
