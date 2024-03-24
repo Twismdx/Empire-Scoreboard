@@ -18,6 +18,7 @@ function App() {
 		matchId,
 		setMatchId,
 		compId,
+		setCompId,
 		comps,
 		setComps,
 		cards,
@@ -58,6 +59,8 @@ function App() {
 					},
 				}
 			)
+			const id = Object.keys(response).map((key) => key)[0]
+			setCompId(id)
 			setComps(response.data)
 			setLeague('VegasLeague')
 			setCards(true)
@@ -111,9 +114,10 @@ function App() {
 
 	function Post() {
 		axios
-			.post(`https://twism.vercel.app/drid`, null, {
+			.post(`https://twism.vercel.app/ids`, null, {
 				params: {
 					matchId,
+					compId,
 				},
 			})
 			.then(function (response) {
