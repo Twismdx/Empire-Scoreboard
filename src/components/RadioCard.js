@@ -19,7 +19,6 @@ const RadioCard = ({ home, away, id, cid, liveStatus }) => {
 		stats,
 		setStats,
 		comps,
-		liveStatus,
 		setLiveStatus,
 	} = useGlobalContext()
 
