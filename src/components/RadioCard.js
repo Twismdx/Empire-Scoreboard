@@ -13,6 +13,8 @@ const RadioCard = ({
 	resetView,
 	setView,
 	league,
+	fetchEBASA,
+	fetchVNEA,
 }) => {
 	const {
 		setMatchId,
@@ -62,8 +64,10 @@ const RadioCard = ({
 		Post(id, cid)
 		if (league === 'SuperLeague') {
 			setView('superleague')
+			fetchEBASA()
 		} else if (league === 'VegasLeague') {
 			setView('vegasleague')
+			fetchVNEA()
 		}
 		setLiveStatus(liveStatus)
 	}

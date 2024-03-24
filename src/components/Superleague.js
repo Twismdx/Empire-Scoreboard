@@ -4,7 +4,6 @@ import { useGlobalContext } from './Context'
 
 const Superleague = ({ resetView }) => {
 	const { stats, liveStatus } = useGlobalContext()
-	const adj = new Array(stats[0])
 
 	const calcSuperleagueFrames = () => {
 		const total = stats[0]?.homescore + stats[0]?.awayscore

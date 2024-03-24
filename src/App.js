@@ -161,6 +161,8 @@ function App() {
 								cid={mapStats[0][0]}
 								setView={setView}
 								league={league}
+								fetchEBASA={fetchEBASA}
+								fetchVNEA={fetchVNEA}
 							/>
 						))}
 					</div>
