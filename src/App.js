@@ -83,6 +83,33 @@ function App() {
 		setView('default')
 	}
 
+	function Post(matchId, compId) {
+		axios
+			.post(`https://twism.vercel.app/ids`, null, {
+				params: {
+					matchId,
+					compId,
+				},
+			})
+			.then(function (response) {
+				var res = Object.keys(response.data).map(function (key) {
+					return response.data[key]
+				})
+				setStats(res)
+			})
+			.catch((err) => console.warn(err))
+	}
+
+	useEffect(() => {
+		Post(matchId, compId)
+		const interval = setInterval(() => {
+			Post(matchId, compId)
+		}, 15000)
+		return () => {
+			clearInterval(interval)
+		}
+	}, [matchId, compId])
+
 	const mapStats = Object.entries(comps).map((item) => item)
 
 	const matchesArray = mapStats.map(([_, compData]) => compData)
