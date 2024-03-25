@@ -18,11 +18,10 @@ function App() {
 		matchId,
 		setMatchId,
 		compId,
-		setCompId,
 		comps,
 		setComps,
-		view,
-		setView,
+		cards,
+		setCards,
 		isReady,
 		setIsReady,
 	} = useGlobalContext()
@@ -40,10 +39,9 @@ function App() {
 					},
 				}
 			)
-			const id = Object.keys(response).map((key) => key)[0]
 			setComps(response.data)
-			setCompId(id)
 			setLeague('SuperLeague')
+			setCards(true)
 		} catch (error) {
 			console.error('Error:', error)
 		}
@@ -60,10 +58,9 @@ function App() {
 					},
 				}
 			)
-			const id = Object.keys(response).map((key) => key)[0]
-			setCompId(id)
 			setComps(response.data)
 			setLeague('VegasLeague')
+			setCards(true)
 		} catch (error) {
 			console.error('Error:', error)
 		}
@@ -71,16 +68,10 @@ function App() {
 
 	const handleVNEA = () => {
 		fetchVNEA()
-		setView('match')
 	}
 
 	const handleEBASA = () => {
 		fetchEBASA()
-		setView('match')
-	}
-
-	const resetView = () => {
-		setView('default')
 	}
 
 	const mapStats = Object.entries(comps).map((item) => item)
@@ -118,6 +109,32 @@ function App() {
 		matchKeys.push(...keys)
 	})
 
+	function Post() {
+		axios
+			.post(`https://twism.vercel.app/drid`, null, {
+				params: {
+					matchId,
+				},
+			})
+			.then(function (response) {
+				var res = Object.keys(response.data).map(function (key) {
+					return response.data[key]
+				})
+				setStats(res)
+			})
+			.catch((err) => console.warn(err))
+	}
+
+	useEffect(() => {
+		Post()
+		const interval = setInterval(() => {
+			Post()
+		}, 15000)
+		return () => {
+			clearInterval(interval)
+		}
+	}, [isLoading])
+
 	// const fetchMatchData = async () => {
 	// 	try {
 	// 		const response = await axios.post(
@@ -134,9 +151,7 @@ function App() {
 	// 	}
 	// }
 
-	useEffect(() => console.log(view), [view])
-
-	if (view === 'match') {
+	if (cards && !isLoading) {
 		return (
 			<>
 				<Helmet>
@@ -155,21 +170,16 @@ function App() {
 								home={match[1].home.teamname}
 								away={match[1].away.teamname}
 								startTime={match[1].matchtime}
-								liveStatus={match[1].livestatus}
 								id={matchKeys[index]}
 								stats={comps}
 								cid={mapStats[0][0]}
-								setView={setView}
-								league={league}
-								fetchEBASA={fetchEBASA}
-								fetchVNEA={fetchVNEA}
 							/>
 						))}
 					</div>
 				</div>
 			</>
 		)
-	} else if (view === 'default') {
+	} else if (!cards && !isLoading) {
 		return (
 			<>
 				<Helmet>
@@ -195,7 +205,7 @@ function App() {
 				</div>
 			</>
 		)
-	} else if (view === 'vegasleague' && stats[0]) {
+	} else if (league === 'VegasLeague') {
 		return (
 			<>
 				<Helmet>
@@ -206,11 +216,11 @@ function App() {
 					</style>
 				</Helmet>
 				<div className='container-3'>
-					<Vegasleague resetView={resetView} />
+					<Vegasleague />
 				</div>
 			</>
 		)
-	} else if (view === 'superleague' && stats[0]) {
+	} else if (league === 'SuperLeague') {
 		return (
 			<>
 				<Helmet>
@@ -221,7 +231,7 @@ function App() {
 					</style>
 				</Helmet>
 				<div className='container-3'>
-					<Superleague resetView={resetView} />
+					<Superleague />
 				</div>
 			</>
 		)

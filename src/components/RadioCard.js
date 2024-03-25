@@ -4,20 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useGlobalContext } from './Context'
 import axios from 'axios'
 
-const RadioCard = ({
-	home,
-	away,
-	id,
-	cid,
-	liveStatus,
-	resetView,
-	setView,
-	league,
-	fetchEBASA,
-	fetchVNEA,
-}) => {
+const RadioCard = ({ home, away, id, cid }) => {
 	const {
+		matchId,
 		setMatchId,
+		compId,
 		setCompId,
 		cards,
 		setCards,
@@ -27,52 +18,28 @@ const RadioCard = ({
 		setIsLoading,
 		stats,
 		setStats,
-		comps,
-		setLiveStatus,
-		matchId,
-		compId,
 	} = useGlobalContext()
 
 	function Post() {
 		axios
-			.post(`https://twism.vercel.app/ids`, null, {
-				params: {
-					matchId: matchId ? matchId : null,
-					compId: compId ? compId : null,
-				},
-			})
+			.post(
+				`https://www.poolstat.net.au/livestream/multimatch?key=Y6tS35_9cysvUkpxXEYD0f2L8qiHZidj&api=1&ids=${matchId}`
+			)
 			.then(function (response) {
 				var res = Object.keys(response.data).map(function (key) {
 					return response.data[key]
 				})
 				setStats(res)
-				console.log(res)
 			})
 			.catch((err) => console.warn(err))
 	}
 
-	useEffect(() => {
-		Post()
-		const interval = setInterval(() => {
-			Post()
-		}, 15000)
-		return () => {
-			clearInterval(interval)
-		}
-	}, [matchId, compId])
-
 	const handleClick = () => {
 		setMatchId(id)
 		setCompId(cid)
+		setCards(false)
 		Post()
-		if (league === 'SuperLeague') {
-			setView('superleague')
-			fetchEBASA()
-		} else if (league === 'VegasLeague') {
-			setView('vegasleague')
-			fetchVNEA()
-		}
-		setLiveStatus(liveStatus)
+		setIsLoading(true)
 	}
 
 	return (
