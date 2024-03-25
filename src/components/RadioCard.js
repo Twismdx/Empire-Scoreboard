@@ -56,7 +56,7 @@ const RadioCard = ({
 		return () => {
 			clearInterval(interval)
 		}
-	}, [])
+	}, [id, cid])
 
 	const handleClick = () => {
 		setMatchId(id)
