@@ -31,6 +31,13 @@ const RadioCard = ({
 		setLiveStatus,
 	} = useGlobalContext()
 
+	useEffect(() => {
+		if (!id == null && !cid == null) {
+			setMatchId(id)
+			setCompId(cid)
+		}
+	}, [id, cid])
+
 	function Post() {
 		axios
 			.post(`https://twism.vercel.app/ids`, null, {
