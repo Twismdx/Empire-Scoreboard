@@ -61,7 +61,7 @@ const RadioCard = ({
 	const handleClick = () => {
 		setMatchId(id)
 		setCompId(cid)
-		Post(id, cid)
+		Post()
 		if (league === 'SuperLeague') {
 			setView('superleague')
 			fetchEBASA()
