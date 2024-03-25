@@ -195,7 +195,7 @@ function App() {
 				</div>
 			</>
 		)
-	} else if (view === 'vegasleague') {
+	} else if (view === 'vegasleague' && stats[0]) {
 		return (
 			<>
 				<Helmet>
@@ -210,7 +210,7 @@ function App() {
 				</div>
 			</>
 		)
-	} else if (view === 'superleague') {
+	} else if (view === 'superleague' && stats[0]) {
 		return (
 			<>
 				<Helmet>

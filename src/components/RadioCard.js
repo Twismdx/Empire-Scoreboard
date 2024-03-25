@@ -46,6 +46,7 @@ const RadioCard = ({
 					return response.data[key]
 				})
 				setStats(res)
+				console.log(res)
 			})
 			.catch((err) => console.warn(err))
 	}
