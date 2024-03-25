@@ -29,6 +29,8 @@ const RadioCard = ({
 		setStats,
 		comps,
 		setLiveStatus,
+		matchId,
+		compId,
 	} = useGlobalContext()
 
 	useEffect(() => {
