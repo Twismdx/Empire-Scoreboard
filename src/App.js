@@ -41,9 +41,9 @@ function App() {
 				}
 			)
 			const id = Object.keys(response).map((key) => key)[0]
-			setLeague('SuperLeague')
 			setComps(response.data)
 			setCompId(id)
+			setLeague('SuperLeague')
 		} catch (error) {
 			console.error('Error:', error)
 		}
@@ -61,9 +61,9 @@ function App() {
 				}
 			)
 			const id = Object.keys(response).map((key) => key)[0]
-			setLeague('VegasLeague')
 			setCompId(id)
 			setComps(response.data)
+			setLeague('VegasLeague')
 		} catch (error) {
 			console.error('Error:', error)
 		}
@@ -82,33 +82,6 @@ function App() {
 	const resetView = () => {
 		setView('default')
 	}
-
-	function Post(matchId, compId) {
-		axios
-			.post(`https://twism.vercel.app/ids`, null, {
-				params: {
-					matchId,
-					compId,
-				},
-			})
-			.then(function (response) {
-				var res = Object.keys(response.data).map(function (key) {
-					return response.data[key]
-				})
-				setStats(res)
-			})
-			.catch((err) => console.warn(err))
-	}
-
-	useEffect(() => {
-		Post(matchId, compId)
-		const interval = setInterval(() => {
-			Post(matchId, compId)
-		}, 15000)
-		return () => {
-			clearInterval(interval)
-		}
-	}, [matchId, compId])
 
 	const mapStats = Object.entries(comps).map((item) => item)
 
