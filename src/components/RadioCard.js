@@ -31,7 +31,7 @@ const RadioCard = ({
 		setLiveStatus,
 	} = useGlobalContext()
 
-	function Post(matchId, compId) {
+	function Post() {
 		axios
 			.post(`https://twism.vercel.app/ids`, null, {
 				params: {
@@ -49,14 +49,14 @@ const RadioCard = ({
 	}
 
 	useEffect(() => {
-		Post(id, cid)
+		Post()
 		const interval = setInterval(() => {
-			Post(id, cid)
+			Post()
 		}, 15000)
 		return () => {
 			clearInterval(interval)
 		}
-	}, [id, cid])
+	}, [matchId, compId])
 
 	const handleClick = () => {
 		setMatchId(id)
