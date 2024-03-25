@@ -33,19 +33,12 @@ const RadioCard = ({
 		compId,
 	} = useGlobalContext()
 
-	useEffect(() => {
-		if (!id == null && !cid == null) {
-			setMatchId(id)
-			setCompId(cid)
-		}
-	}, [id, cid])
-
 	function Post() {
 		axios
 			.post(`https://twism.vercel.app/ids`, null, {
 				params: {
-					matchId,
-					compId,
+					matchId: matchId ? matchId : null,
+					compId: compId ? compId : null,
 				},
 			})
 			.then(function (response) {
