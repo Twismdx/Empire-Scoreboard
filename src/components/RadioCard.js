@@ -49,7 +49,7 @@ const RadioCard = ({
 	}
 
 	useEffect(() => {
-		Post()
+		Post(id, cid)
 		const interval = setInterval(() => {
 			Post(id, cid)
 		}, 15000)
