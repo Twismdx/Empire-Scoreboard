@@ -24,33 +24,32 @@ const AppProvider = ({ children }) => {
 	const [copy, setCopy] = useState('')
 	const [stats, setStats] = useState([])
 	const [comps, setComps] = useState([])
+	const [cards, setCards] = useState(false)
 	const [isReady, setIsReady] = useState(false)
-	const [liveStatus, setLiveStatus] = useState()
-	const [view, setView] = useState('default')
 
-	// configureAbly({
-	// 	key: '9zzpLg.YrD7jw:RCOMB9Lq4mkx0-5Zn99PFY4iKEA1WtvpBWG-5fRkv0M',
-	// 	clientId: 'Overlay',
-	// })
+	configureAbly({
+		key: '9zzpLg.YrD7jw:RCOMB9Lq4mkx0-5Zn99PFY4iKEA1WtvpBWG-5fRkv0M',
+		clientId: 'Overlay',
+	})
 
-	// const [channel] = useChannel('PlayerData', (message) => {
-	// 	console.log(message.data.clockStatus)
-	// 	setTime(message.data.time)
-	// 	setp1Score(message.data.p1Score)
-	// 	setp2Score(message.data.p2Score)
-	// 	setClockStatus(message.data.clockStatus)
-	// 	setFrameCount(message.data.frameCount)
-	// })
+	const [channel] = useChannel('PlayerData', (message) => {
+		console.log(message.data.clockStatus)
+		setTime(message.data.time)
+		setp1Score(message.data.p1Score)
+		setp2Score(message.data.p2Score)
+		setClockStatus(message.data.clockStatus)
+		setFrameCount(message.data.frameCount)
+	})
 
-	// useEffect(() => {
-	// 	channel.publish('PlayerNames', [
-	// 		{
-	// 			p1Name: p1Name,
-	// 			p2Name: p2Name,
-	// 		},
-	// 	])
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [p1Name, p2Name])
+	useEffect(() => {
+		channel.publish('PlayerNames', [
+			{
+				p1Name: p1Name,
+				p2Name: p2Name,
+			},
+		])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [p1Name, p2Name])
 
 	return (
 		<AppContext.Provider
@@ -91,12 +90,10 @@ const AppProvider = ({ children }) => {
 				setCompId,
 				comps,
 				setComps,
-				view,
-				setView,
+				cards,
+				setCards,
 				isReady,
 				setIsReady,
-				liveStatus,
-				setLiveStatus,
 			}}
 		>
 			{children}
