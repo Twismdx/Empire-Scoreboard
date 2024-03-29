@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import './home.css'
 import MatchCard from './components/MatchCard'
 import { Multi } from './components/Multi'
@@ -8,13 +8,12 @@ import { useGlobalContext } from './components/Context'
 import axios from 'axios'
 import { Helmet } from 'react-helmet'
 import { RadioCard } from './components/RadioCard'
+import data from './data.json'
 
 function App() {
 	const {
 		stats,
 		setStats,
-		isLoading,
-		setIsLoading,
 		matchId,
 		setMatchId,
 		compId,
@@ -23,11 +22,12 @@ function App() {
 		setComps,
 		view,
 		setView,
-		isReady,
-		setIsReady,
+		liveStatus,
+		setLiveStatus,
 	} = useGlobalContext()
 
-	const [league, setLeague] = useState('VegasLeague')
+	const [league, setLeague] = useState(null)
+	let intervalId
 
 	const fetchEBASA = async () => {
 		try {
@@ -40,10 +40,9 @@ function App() {
 					},
 				}
 			)
-			const id = Object.keys(response).map((key) => key)[0]
-			setLeague('SuperLeague')
+			const cid = Object.keys(response).map((key) => key)[0]
 			setComps(response.data)
-			setCompId(id)
+			setCompId(cid)
 		} catch (error) {
 			console.error('Error:', error)
 		}
@@ -60,33 +59,41 @@ function App() {
 					},
 				}
 			)
-			const id = Object.keys(response).map((key) => key)[0]
-			setLeague('VegasLeague')
-			setCompId(id)
+			const cid = Object.keys(response).map((key) => key)[0]
+
+			setCompId(cid)
 			setComps(response.data)
 		} catch (error) {
 			console.error('Error:', error)
 		}
 	}
 
-	const handleVNEA = () => {
-		fetchVNEA()
-		setView('match')
+	async function handleVNEA() {
+		await fetchVNEA()
+		intervalId = setInterval(fetchVNEA, 30000)
+		setLeague('VegasLeague')
+		setView('cards')
 	}
 
-	const handleEBASA = () => {
-		fetchEBASA()
-		setView('match')
+	async function handleEBASA() {
+		await fetchEBASA()
+		intervalId = setInterval(fetchEBASA, 30000)
+		setLeague('SuperLeague')
+		setView('cards')
 	}
 
 	const resetView = () => {
-		setView('default')
+		setStats(null)
+		setMatchId(null)
+		if (league === 'SuperLeague') {
+			handleEBASA()
+		} else if (league === 'VegasLeague') {
+			handleVNEA()
+		}
 	}
 
 	const mapStats = Object.entries(comps).map((item) => item)
-
 	const matchesArray = mapStats.map(([_, compData]) => compData)
-
 	const liveArray = Object.entries(matchesArray).reduce(
 		(liveMatches, [itemKey, itemValue]) => {
 			if (itemValue.matches && typeof itemValue.matches === 'object') {
@@ -108,15 +115,18 @@ function App() {
 		},
 		[]
 	)
-
 	const live = Object.entries(liveArray)
-	const matchKeys = []
+	const matchKeys = useMemo(() => {
+		const keys = []
+		Object.entries(comps).forEach((item, index) => {
+			const matchkeydata = Object.entries(item[1].matches)
+			const itemKeys = matchkeydata.map(([key, value]) => key)
+			keys.push(...itemKeys)
+		})
+		return keys
+	}, [comps])
 
-	Object.entries(comps).forEach((item, index) => {
-		const matchkeydata = Object.entries(item[1].matches)
-		const keys = matchkeydata.map(([key, value]) => key)
-		matchKeys.push(...keys)
-	})
+	useEffect(() => console.log(matchKeys), [matchKeys])
 
 	// const fetchMatchData = async () => {
 	// 	try {
@@ -128,7 +138,7 @@ function App() {
 	// 		})
 
 	// 		// Update the ref instead of the state
-	// 		statsRef.current = res;
+	// 		statsRef.current = res
 	// 	} catch (error) {
 	// 		console.error('Error:', error)
 	// 	}
@@ -136,7 +146,7 @@ function App() {
 
 	useEffect(() => console.log(view), [view])
 
-	if (view === 'match') {
+	if (view === 'cards') {
 		return (
 			<>
 				<Helmet>
@@ -152,17 +162,12 @@ function App() {
 						{live.map((match, index) => (
 							<RadioCard
 								key={matchKeys[index]}
+								mid={matchKeys[index]}
 								home={match[1].home.teamname}
 								away={match[1].away.teamname}
 								startTime={match[1].matchtime}
 								liveStatus={match[1].livestatus}
-								id={matchKeys[index]}
-								stats={comps}
-								cid={mapStats[0][0]}
-								setView={setView}
 								league={league}
-								fetchEBASA={fetchEBASA}
-								fetchVNEA={fetchVNEA}
 							/>
 						))}
 					</div>
@@ -195,7 +200,7 @@ function App() {
 				</div>
 			</>
 		)
-	} else if (view === 'vegasleague') {
+	} else if (view === 'VegasLeague' && stats[0] && stats[0].grade === 'H/C') {
 		return (
 			<>
 				<Helmet>
@@ -206,11 +211,11 @@ function App() {
 					</style>
 				</Helmet>
 				<div className='container-3'>
-					<Vegasleague resetView={resetView} />
+					<Vegasleague />
 				</div>
 			</>
 		)
-	} else if (view === 'superleague') {
+	} else if (view === 'VegasLeague' && stats[0] && stats[0].grade !== 'H/C') {
 		return (
 			<>
 				<Helmet>
@@ -221,7 +226,45 @@ function App() {
 					</style>
 				</Helmet>
 				<div className='container-3'>
-					<Superleague resetView={resetView} />
+					<VegasLeagueKO />
+				</div>
+			</>
+		)
+	} else if (
+		view === 'SuperLeague' &&
+		stats[0] &&
+		stats[0].grade === 'Premier'
+	) {
+		return (
+			<>
+				<Helmet>
+					<style>
+						{
+							'body { background-image: none; background-color: transparent !important; }'
+						}
+					</style>
+				</Helmet>
+				<div className='container-3'>
+					<Superleague />
+				</div>
+			</>
+		)
+	} else if (
+		view === 'SuperLeague' &&
+		stats[0] &&
+		stats[0].grade !== 'Premier'
+	) {
+		return (
+			<>
+				<Helmet>
+					<style>
+						{
+							'body { background-image: none; background-color: transparent !important; }'
+						}
+					</style>
+				</Helmet>
+				<div className='container-3'>
+					<SuperleagueKO />
 				</div>
 			</>
 		)

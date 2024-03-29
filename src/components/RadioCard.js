@@ -4,39 +4,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useGlobalContext } from './Context'
 import axios from 'axios'
 
-const RadioCard = ({
-	home,
-	away,
-	id,
-	cid,
-	liveStatus,
-	resetView,
-	setView,
-	league,
-	fetchEBASA,
-	fetchVNEA,
-}) => {
-	const {
-		setMatchId,
-		setCompId,
-		cards,
-		setCards,
-		isReady,
-		setIsReady,
-		isLoading,
-		setIsLoading,
-		stats,
-		setStats,
-		comps,
-		setLiveStatus,
-	} = useGlobalContext()
+const RadioCard = ({ home, away, startTime, liveStatus, mid, league }) => {
+	const { setMatchId, compId, matchId, setView, setStats, setLiveStatus } =
+		useGlobalContext()
 
-	function Post(matchId, compId) {
+	let intervalId
+
+	async function getStats() {
 		axios
 			.post(`https://twism.vercel.app/ids`, null, {
 				params: {
-					matchId,
-					compId,
+					matchId: matchId,
+					compId: compId,
 				},
 			})
 			.then(function (response) {
@@ -48,28 +27,15 @@ const RadioCard = ({
 			.catch((err) => console.warn(err))
 	}
 
-	useEffect(() => {
-		Post()
-		const interval = setInterval(() => {
-			Post(id, cid)
-		}, 15000)
-		return () => {
-			clearInterval(interval)
-		}
-	}, [])
-
-	const handleClick = () => {
-		setMatchId(id)
-		setCompId(cid)
-		Post(id, cid)
+	async function handleClick() {
+		await setMatchId(mid)
+		await getStats()
+		intervalId = setInterval(getStats, 15000)
 		if (league === 'SuperLeague') {
-			setView('superleague')
-			fetchEBASA()
+			setView('SuperLeague')
 		} else if (league === 'VegasLeague') {
-			setView('vegasleague')
-			fetchVNEA()
+			setView('VegasLeague')
 		}
-		setLiveStatus(liveStatus)
 	}
 
 	return (
