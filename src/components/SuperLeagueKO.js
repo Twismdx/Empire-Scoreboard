@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import '../home.css'
 import { useGlobalContext } from './Context'
 
-const Superleague = ({ resetView }) => {
+const SuperLeagueKO = ({ resetView }) => {
 	const { stats } = useGlobalContext()
 
 	return (
@@ -581,4 +581,4 @@ const Superleague = ({ resetView }) => {
 // {stats[0].homeframepointsadj===0 && stats[0].homescorepoints===0 ? stats[0].homescore : `${homeScore}`}
 // {stats[0].homescorepoints>0 ? `${stats[0].homescore}` : ''}
 // {stats[0].awayscorepoints>0 ? `${stats[0].awayscore}` : ''}
-export { Superleague }
+export { SuperLeagueKO }
