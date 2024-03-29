@@ -266,7 +266,7 @@ function App() {
 					</style>
 				</Helmet>
 				<div className='container-3'>
-					<SuperleagueKO />
+					<SuperLeagueKO />
 				</div>
 			</>
 		)
