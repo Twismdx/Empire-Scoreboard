@@ -443,7 +443,9 @@ const VegasLeagueKO = () => {
 							textAlign: 'center',
 						}}
 					>
-						{stats[0] && stats[0].raceto ? stats[0].raceto : ''}
+						{stats[0] && stats[0].matchformat
+							? stats[0].matchformat
+							: ''}
 					</text>
 					<text
 						textAnchor='middle'
