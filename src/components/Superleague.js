@@ -1,9 +1,31 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import '../home.css'
 import { useGlobalContext } from './Context'
 
-const Superleague = ({ resetView }) => {
-	const { stats, liveStatus } = useGlobalContext()
+const Superleague = () => {
+	const { stats } = useGlobalContext()
+	const adj = new Array(stats[0])
+	const calculateScore = (data, type) =>
+		Object.values(data).reduce(
+			(acc, curr) =>
+				acc +
+				parseInt(curr[`${type}scorepoints`]) +
+				parseInt(curr[`${type}framepointsadj`]),
+			0
+		)
+	const homeScore = calculateScore(adj, 'home')
+	const awayScore = calculateScore(adj, 'away')
+
+	const calculateFrames = (data, type) =>
+		Object.values(data).reduce(
+			(acc, curr) =>
+				25 -
+				(acc +
+					parseInt(curr[`homescore`]) +
+					parseInt(curr[`awayscore`])),
+			0
+		)
+	const framesLeft = calculateFrames(adj)
 
 	const calcSuperleagueFrames = () => {
 		const total = stats[0]?.homescore + stats[0]?.awayscore
@@ -11,13 +33,6 @@ const Superleague = ({ resetView }) => {
 
 		return frames
 	}
-
-	useEffect(() => {
-		if (liveStatus === '3') {
-			resetView()
-		}
-	}, [liveStatus])
-
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -456,10 +471,10 @@ const Superleague = ({ resetView }) => {
 							textAlign: 'center',
 						}}
 					>
-						{stats[0].compname ===
-						'Super League 2024 (Premier Grade)'
+						{stats[0].homeframepointsadj === '0' &&
+							stats[0].awayframepointsadj === '0'
 							? calcSuperleagueFrames()
-							: ''}
+							: framesLeft}
 					</text>
 					<text
 						textAnchor='middle'
@@ -471,10 +486,7 @@ const Superleague = ({ resetView }) => {
 							textAlign: 'center',
 						}}
 					>
-						{stats[0].compname ===
-						'Super League 2024 (Premier Grade)'
-							? 'Frames Left'
-							: ''}
+						Frames Left
 					</text>
 					<text
 						textAnchor='left'
@@ -508,7 +520,9 @@ const Superleague = ({ resetView }) => {
 							textAlign: 'center',
 						}}
 					>
-						{stats[0].homescore}
+						{stats[0].homescorepoints === '0'
+							? stats[0].homescore
+							: `${homeScore}`}
 					</text>
 					<text
 						textAnchor='middle'
@@ -520,7 +534,9 @@ const Superleague = ({ resetView }) => {
 							textAlign: 'center',
 						}}
 					>
-						{stats[0].awayscore}
+						{stats[0].awayscorepoints === '0'
+							? stats[0].awayscore
+							: `${awayScore}`}
 					</text>
 					<text
 						textAnchor='middle'
@@ -556,7 +572,7 @@ const Superleague = ({ resetView }) => {
 							textAlign: 'center',
 						}}
 					>
-						{}
+						{ }
 					</text>
 					<text
 						textAnchor='middle'
@@ -567,7 +583,7 @@ const Superleague = ({ resetView }) => {
 							textAlign: 'center',
 						}}
 					>
-						{}
+						{ }
 					</text>
 					<text
 						textAnchor='middle'

@@ -19,7 +19,6 @@ function App() {
 		matchId,
 		setMatchId,
 		compId,
-		setCompId,
 		comps,
 		setComps,
 		view,
@@ -176,7 +175,7 @@ function App() {
 				</div>
 			</>
 		)
-	} else if (view === 'default') {
+	} else if (!cards && !isLoading) {
 		return (
 			<>
 				<Helmet>
